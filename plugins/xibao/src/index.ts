@@ -109,6 +109,7 @@ function html(params: {
   img: Buffer,
   importCSS: string
 }) {
+  const text = escapeHTML(params.text).replaceAll('\n', '<br/>')
   return outdent`
   <head>
     <style>
@@ -133,7 +134,7 @@ function html(params: {
     </style>
   </head>
   <body>
-    <div>${params.text.replaceAll('\n', '<br/>')}</div>
+    <div>${text}</div>
   </body>
   <script>
     const dom = document.querySelector('body')
@@ -144,4 +145,14 @@ function html(params: {
       dom.style.fontSize = --fontSize + 'px'
     }
   </script>`
+}
+
+function escapeHTML(str: string){
+  return str.replace(/[&<>'"]/g, tag => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '\'': '&#39;',
+    '"': '&quot;'
+  }[tag] ?? tag))
 }
